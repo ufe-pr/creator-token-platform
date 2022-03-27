@@ -127,6 +127,22 @@ contract CreatorToken {
         return IterableMapping.get(_tokenSupply, _token);
     }
 
+    function getTokens(uint256 _start, uint256 _maxSize)
+        public
+        view
+        returns (address[] memory)
+    {
+        IterableMapping.Map storage _tokens = _tokenSupply;
+        if (_tokens.size() < _start + 1) return new address[](0);
+        uint256 size = _tokens.size();
+        uint256 end = min(_start + _maxSize, size);
+        address[] memory result = new address[](end - _start);
+        for (uint256 i = _start; i < end; i++) {
+            result[i - _start] = _tokens.getKeyAtIndex(i);
+        }
+        return result;
+    }
+
     function tokenHolders(
         address _token,
         uint256 _start,
